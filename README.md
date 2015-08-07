@@ -9,7 +9,7 @@
 
 编辑配置文件`vi /usr/local/zookeeper/conf/zoo.cfg`
 
-添加`data=数据存储目录`
+添加`dataDir=数据存储目录`
 
 添加`dataLogDir=数据日志存储目录`
 

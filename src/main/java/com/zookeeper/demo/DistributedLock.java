@@ -33,7 +33,7 @@ import org.apache.zookeeper.data.Stat;
  */
 public class DistributedLock implements Lock, Watcher {
 	private ZooKeeper zk;
-	private String root = "/locks";// 根
+	private String root = "/webserver";// 根
 	private String lockName;// 竞争资源的标志
 	private String waitNode;// 等待前一个锁
 	private String myZnode;// 当前锁
@@ -54,6 +54,11 @@ public class DistributedLock implements Lock, Watcher {
 		// 创建一个与服务器的连接
 		try {
 			zk = new ZooKeeper(config, sessionTimeout, this);
+            //如果锁没有初始化好就等待
+            if (States.CONNECTING == zk.getState()) {
+                this.latch = new CountDownLatch(1);
+                this.latch.await();
+            }
 			Stat stat = zk.exists(root, false);
 			if (stat == null) {
 				// 创建根节点
